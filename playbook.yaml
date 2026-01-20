@@ -4,17 +4,17 @@
   become: yes
 
   tasks:
-    # 1. Install Nginx using the special Amazon Linux Extras command
+    
     - name: Install Nginx (Amazon Linux Extras)
       shell: "amazon-linux-extras install nginx1 -y"
 
-    # 2. Install OpenSSL (Required for generating certificates)
+   
     - name: Install OpenSSL
       yum:
         name: openssl
         state: present
 
-    # 3. Generate a Self-Signed SSL Certificate
+    
     - name: Generate Self-Signed SSL Certificate
       command: >
         openssl req -x509 -nodes -days 365 -newkey rsa:2048
@@ -24,7 +24,7 @@
       args:
         creates: /etc/pki/tls/certs/nginx-selfsigned.crt
 
-    # 4. Configure Nginx to listen on Port 443 (HTTPS)
+   
     - name: Configure Nginx for HTTPS
       copy:
         content: |
@@ -44,14 +44,14 @@
         dest: /etc/nginx/conf.d/ssl.conf
       notify: Restart Nginx
 
-    # 5. Start Nginx Service
+   
     - name: Start Nginx Service
       service:
         name: nginx
         state: started
         enabled: yes
 
-    # 6. Create Your Custom Stylish Hello World Page
+   
     - name: Create Stylish Hello World Page
       copy:
         dest: /usr/share/nginx/html/index.html
@@ -101,14 +101,14 @@
           </head>
           <body>
             <div class="card">
-              <h1>Welcome Eng. Omar Heggy</h1>
+              <h1>Welcome to my humble webpage</h1>
               <p class="subtitle">I am <strong>Bahi</strong></p>
-              <div class="badge">Terraform + I am also using Ansible!</div>
+              <div class="badge">Iam using Terraform + I am also using Ansible!</div>
             </div>
           </body>
           </html>
 
-  # Handler to restart Nginx if the SSL config changes
+  
   handlers:
     - name: Restart Nginx
       service:
