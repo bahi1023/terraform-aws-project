@@ -10,7 +10,7 @@ module "ec2" {
   source = "./modules/ec2"
   security_group_id = aws_security_group.main_vpc.id
   subnet_id = module.subnet.bahi_subent_id
-  instance_count = 1
+  instance_count = local.instance_count
   instance_type = local.instance_type
   tags           = local.common_tags
   key_name         = local.key_name

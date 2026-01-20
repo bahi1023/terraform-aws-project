@@ -10,10 +10,10 @@ resource "aws_instance" "main" {
   tags                        = var.tags
 
   # Optional: Lifecycle rules if needed
-  # lifecycle {
+   #lifecycle {
    #  prevent_destroy       = true
   #   create_before_destroy = true
-#   }
+ #  }
 }
 #############
 resource "null_resource" "update_web_server" {

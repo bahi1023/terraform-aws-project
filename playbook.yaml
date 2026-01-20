@@ -4,20 +4,54 @@
   become: yes
 
   tasks:
-    # --- FIX STARTS HERE ---
-    # We use 'shell' because standard 'yum' cannot find Nginx on Amazon Linux 2
+    # 1. Install Nginx using the special Amazon Linux Extras command
     - name: Install Nginx (Amazon Linux Extras)
       shell: "amazon-linux-extras install nginx1 -y"
-    
-    # We removed the standard 'yum' task because it causes the error
-    # --- FIX ENDS HERE ---
 
+    # 2. Install OpenSSL (Required for generating certificates)
+    - name: Install OpenSSL
+      yum:
+        name: openssl
+        state: present
+
+    # 3. Generate a Self-Signed SSL Certificate
+    - name: Generate Self-Signed SSL Certificate
+      command: >
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048
+        -keyout /etc/pki/tls/private/nginx-selfsigned.key
+        -out /etc/pki/tls/certs/nginx-selfsigned.crt
+        -subj "/C=EG/ST=Giza/L=Cairo/O=DevOps/CN=localhost"
+      args:
+        creates: /etc/pki/tls/certs/nginx-selfsigned.crt
+
+    # 4. Configure Nginx to listen on Port 443 (HTTPS)
+    - name: Configure Nginx for HTTPS
+      copy:
+        content: |
+          server {
+              listen 80;
+              listen 443 ssl;
+              server_name localhost;
+
+              ssl_certificate /etc/pki/tls/certs/nginx-selfsigned.crt;
+              ssl_certificate_key /etc/pki/tls/private/nginx-selfsigned.key;
+
+              location / {
+                  root /usr/share/nginx/html;
+                  index index.html index.htm;
+              }
+          }
+        dest: /etc/nginx/conf.d/ssl.conf
+      notify: Restart Nginx
+
+    # 5. Start Nginx Service
     - name: Start Nginx Service
       service:
         name: nginx
         state: started
         enabled: yes
 
+    # 6. Create Your Custom Stylish Hello World Page
     - name: Create Stylish Hello World Page
       copy:
         dest: /usr/share/nginx/html/index.html
@@ -73,3 +107,10 @@
             </div>
           </body>
           </html>
+
+  # Handler to restart Nginx if the SSL config changes
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

@@ -20,25 +20,14 @@ variable "subnet_cidr" {
   type        = string
   default     = "10.0.1.0/24"
 }
-variable "ami_id" {
-  description = "AMI ID for the EC2 Instance (Amazon Linux 2 in us-east-1)"
-  type        = string
-  default     = "ami-0c7217cdde317cfec" 
-}
 variable "environment" {
   description = "Deployment Environment (prod or non-prod)"
   type        = string
-}
-variable "base_instance_count" {
-  type = number
+
 }
 variable "instance_type_map" {
   description = "Map of environment to instance type"
   type        = map(string)
-}
-variable "allowed_ports_map" {
-  description = "Map of service names to port numbers"
-  type        = map(number)
 }
 variable "project_name" {
   type = string
