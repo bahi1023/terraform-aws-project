@@ -35,13 +35,28 @@ This repository demonstrates a complete DevOps lifecycle by automating the provi
 ## 📂 Project Structure
 
 ```bash
-.
-├── modules/                # Reusable Terraform modules (Networking & EC2)
-├── playbook.yaml           # Ansible playbook for Nginx & SSL setup
-├── terraform.tfvars.json   # Environment variables (Dev/Prod)
-├── backend.tf              # S3 Remote State configuration
-├── main.tf                 # Primary Terraform execution file
-└── outputs.tf              # Infrastructure output definitions
+DAY3_LAB1/
+├── modules/
+│   ├── ec2/
+│   │   ├── data.tf            # Fetching AMIs and existing resources
+│   │   ├── main.tf            # EC2 instance and Security Group logic
+│   │   ├── outputs.tf         # EC2 specific outputs (e.g., Public IP)
+│   │   └── variables.tf       # Input variables for EC2 module
+│   └── subnet/
+│       ├── main.tf            # Subnet and Networking resource logic
+│       ├── outputs.tf         # Subnet IDs for EC2 placement
+│       └── variables.tf       # CIDR blocks and VPC references
+├── backend.tf                 # S3 Remote State & DynamoDB locking config
+├── locals.tf                  # Local values for common naming/tagging
+├── main.tf                    # Root configuration calling the modules
+├── module.tf                  # Module instantiation (EC2 & Subnet)
+├── outputs.tf                 # Final infrastructure output definitions
+├── providers.tf               # AWS Provider and Version constraints
+├── variables.tf               # Global input variable definitions
+├── terraform.tfvars.json      # Environment-specific variable values
+├── playbook.yaml              # Ansible playbook for Nginx & SSL setup
+├── my-terraform-key.pem       # SSH Private Key (Ensure this is in .gitignore!)
+└── .terraform.lock.hcl        # Provider dependency lock file
 
 ```
 
