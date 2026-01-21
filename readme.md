@@ -35,7 +35,7 @@ This repository demonstrates a complete DevOps lifecycle by automating the provi
 ## 📂 Project Structure
 
 ```bash
-DAY3_LAB1/
+terraform
 ├── modules/
 │   ├── ec2/
 │   │   ├── data.tf            # Fetching AMIs and existing resources
